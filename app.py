@@ -257,8 +257,8 @@ div[data-testid="stButton"] > button,
     border: none !important;
 
     color: white !important;
-    font-weight: 900 !important;
-    font-size: 17px !important;
+    font-weight: 1100!important;
+    font-size: 20px !important;
     background: linear-gradient(90deg, #ef3340, #457b9d) !important;
 
     display: flex !important;
