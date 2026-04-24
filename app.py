@@ -157,67 +157,115 @@ st.markdown("""
 [data-testid="stAppViewContainer"] {
     background: #f1f5f9;
 }
+
+.block-container {
+    padding-top: 1.5rem;
+    max-width: 1200px;
+}
+
 .header-box {
     background: white;
     border-radius: 18px;
-    padding: 22px;
+    padding: 18px;
     display: flex;
     align-items: center;
-    gap: 24px;
-    margin-bottom: 24px;
+    gap: 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
 }
+
+.header-box img {
+    width: 145px;
+    height: 105px;
+    object-fit: contain;
+}
+
 .main-title {
-    font-size: 30px;
+    font-size: 26px;
     font-weight: 800;
     color: #0f172a;
+    line-height: 1.2;
 }
+
 .sub-title {
-    font-size: 18px;
+    font-size: 16px;
     color: #475569;
+    margin-top: 6px;
 }
+
 .metric-box {
     background: white;
     border-radius: 14px;
-    padding: 18px;
+    padding: 14px;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
+    height: 78px;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
 }
+
 .metric-label {
-    font-size: 16px;
+    font-size: 14px;
     color: #0f172a;
 }
+
 .metric-value {
-    font-size: 30px;
+    font-size: 26px;
     font-weight: 800;
     color: #ef3340;
+    line-height: 1.2;
 }
+
 .section-box {
     background: white;
     border-radius: 18px;
-    padding: 20px;
-    margin-top: 20px;
+    padding: 18px;
+    margin-top: 18px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
 }
+
 .section-title {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 800;
     color: #0f172a;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
 }
+
 .stButton > button {
     width: 100%;
-    min-height: 90px;
-    border-radius: 14px;
+    height: 72px !important;
+    min-height: 72px !important;
+    max-height: 72px !important;
+
+    border-radius: 12px;
     border: none;
     color: white;
     font-weight: 800;
-    font-size: 16px;
+    font-size: 15px;
     background: linear-gradient(135deg, #ef3340, #457b9d);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    padding: 10px 14px;
+    white-space: normal;
+    word-break: break-word;
+    overflow: hidden;
+    line-height: 1.2;
 }
+
 .stButton > button:hover {
     color: white;
     border: none;
     opacity: 0.92;
+    transform: translateY(-1px);
 }
+
+div[data-testid="column"] {
+    padding: 0 6px;
+}
+
 .alt-box {
     background: #f8fafc;
     border-left: 6px solid #ef3340;
@@ -227,8 +275,9 @@ st.markdown("""
     font-weight: 700;
     margin-bottom: 10px;
 }
-.search-box {
-    margin-bottom: 18px;
+
+input {
+    border-radius: 12px !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -283,9 +332,9 @@ def filter_ana_gruplar(query):
 logo_b64 = image_to_base64(LOGO_PATH)
 
 if logo_b64:
-    logo_html = f'<img src="data:image/jpeg;base64,{logo_b64}" width="170">'
+    logo_html = f'<img src="data:image/jpeg;base64,{logo_b64}">'
 else:
-    logo_html = '<div style="font-size:52px;">🏗️</div>'
+    logo_html = '<div style="font-size:60px;">🏗️</div>'
 
 st.markdown(
     f"""
