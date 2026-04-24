@@ -200,12 +200,16 @@ st.markdown("""
     text-align: center;
     margin-bottom: 18px;
     height: 78px;
+    overflow: hidden;
     box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
 }
 
 .metric-label {
     font-size: 14px;
     color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .metric-value {
@@ -213,6 +217,9 @@ st.markdown("""
     font-weight: 800;
     color: #ef3340;
     line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .section-box {
@@ -230,26 +237,37 @@ st.markdown("""
     margin-bottom: 16px;
 }
 
-/* SABİT VE EŞİT DİKDÖRTGEN BUTONLAR */
+/* KUTULAR: EŞİT GENİŞLİK + EŞİT YÜKSEKLİK */
+div[data-testid="column"] {
+    padding: 8px !important;
+}
+
+div[data-testid="stButton"] {
+    width: 100% !important;
+}
+
+div[data-testid="stButton"] > button,
 .stButton > button {
     width: 100% !important;
-    height: 72px !important;
-    min-height: 72px !important;
-    max-height: 72px !important;
+    height: 80px !important;
+    min-height: 80px !important;
+    max-height: 80px !important;
 
-    border-radius: 12px !important;
+    border-radius: 14px !important;
     border: none !important;
+
     color: white !important;
     font-weight: 800 !important;
     font-size: 15px !important;
-    background: linear-gradient(135deg, #ef3340, #457b9d) !important;
+    background: linear-gradient(90deg, #ef3340, #457b9d) !important;
 
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    box-sizing: border-box !important;
 
     text-align: center !important;
-    padding: 0 14px !important;
+    padding: 0 16px !important;
     line-height: 1 !important;
 
     white-space: nowrap !important;
@@ -257,6 +275,7 @@ st.markdown("""
     text-overflow: ellipsis !important;
 }
 
+div[data-testid="stButton"] > button p,
 .stButton > button p {
     margin: 0 !important;
     padding: 0 !important;
@@ -266,15 +285,12 @@ st.markdown("""
     white-space: nowrap !important;
 }
 
+div[data-testid="stButton"] > button:hover,
 .stButton > button:hover {
     color: white !important;
     border: none !important;
-    opacity: 0.92;
-    transform: translateY(-1px);
-}
-
-div[data-testid="column"] {
-    padding: 0 6px;
+    opacity: 0.95;
+    transform: translateY(-2px);
 }
 
 .alt-box {
@@ -370,12 +386,12 @@ ana_gruplar = list(DATA.keys())
 gruplar = get_all_groups()
 alt_gruplar = get_all_alt_groups()
 
-m1, m2, m3, m4 = st.columns(4)
+m1, m2, m3 = st.columns(3)
 
 with m1:
     st.markdown(f"""
     <div class="metric-box">
-        <div class="metric-label">Ana Grup</div>
+        <div class="metric-label">Ana Grup Sayısı</div>
         <div class="metric-value">{len(ana_gruplar)}</div>
     </div>
     """, unsafe_allow_html=True)
@@ -396,15 +412,6 @@ with m3:
     </div>
     """, unsafe_allow_html=True)
 
-with m4:
-    secim = st.session_state.secilen_ana_grup or "-"
-    st.markdown(f"""
-    <div class="metric-box">
-        <div class="metric-label">Seçim</div>
-        <div class="metric-value">{secim}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
 arama = st.text_input("Ara", placeholder="Beton, Demir, Kablo, Cephe...")
 
 gosterilecek_ana_gruplar = filter_ana_gruplar(arama)
@@ -416,7 +423,7 @@ for i in range(0, len(gosterilecek_ana_gruplar), 4):
     cols = st.columns(4)
     for j, ana_grup in enumerate(gosterilecek_ana_gruplar[i:i + 4]):
         with cols[j]:
-            if st.button(ana_grup, key=f"ana_{ana_grup}"):
+            if st.button(ana_grup, key=f"ana_{ana_grup}", use_container_width=True):
                 st.session_state.secilen_ana_grup = ana_grup
                 st.session_state.secilen_grup = None
 
@@ -435,7 +442,11 @@ if st.session_state.secilen_ana_grup:
         cols = st.columns(5)
         for j, grup in enumerate(secilen_gruplar[i:i + 5]):
             with cols[j]:
-                if st.button(grup, key=f"grup_{st.session_state.secilen_ana_grup}_{grup}"):
+                if st.button(
+                    grup,
+                    key=f"grup_{st.session_state.secilen_ana_grup}_{grup}",
+                    use_container_width=True
+                ):
                     st.session_state.secilen_grup = grup
 
     st.markdown('</div>', unsafe_allow_html=True)
