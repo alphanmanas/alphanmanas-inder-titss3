@@ -230,34 +230,45 @@ st.markdown("""
     margin-bottom: 16px;
 }
 
+/* SABİT VE EŞİT DİKDÖRTGEN BUTONLAR */
 .stButton > button {
-    width: 100%;
+    width: 100% !important;
     height: 72px !important;
     min-height: 72px !important;
     max-height: 72px !important;
 
-    border-radius: 12px;
-    border: none;
-    color: white;
-    font-weight: 800;
-    font-size: 15px;
-    background: linear-gradient(135deg, #ef3340, #457b9d);
+    border-radius: 12px !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 800 !important;
+    font-size: 15px !important;
+    background: linear-gradient(135deg, #ef3340, #457b9d) !important;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 
-    padding: 10px 14px;
-    white-space: normal;
-    word-break: break-word;
-    overflow: hidden;
-    line-height: 1.2;
+    text-align: center !important;
+    padding: 0 14px !important;
+    line-height: 1 !important;
+
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.stButton > button p {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
 }
 
 .stButton > button:hover {
-    color: white;
-    border: none;
+    color: white !important;
+    border: none !important;
     opacity: 0.92;
     transform: translateY(-1px);
 }
