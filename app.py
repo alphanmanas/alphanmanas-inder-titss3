@@ -257,8 +257,9 @@ div[data-testid="stButton"] > button,
     border: none !important;
 
     color: white !important;
-    font-weight: 1100!important;
-    font-size: 20px !important;
+    font-weight: 900 !important;
+    font-size: 18px !important;
+
     background: linear-gradient(90deg, #ef3340, #457b9d) !important;
 
     display: flex !important;
@@ -283,6 +284,7 @@ div[data-testid="stButton"] > button p,
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
+    font-weight: 900 !important;
 }
 
 div[data-testid="stButton"] > button:hover,
