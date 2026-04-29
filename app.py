@@ -152,17 +152,343 @@ DATA = {
 "Yeni Nesil Sistemler":["Akıllı Şebeke","Mikrogrid","Enerji Yönetimi","Karbon Takip","ESG"]}
 }
 
-# --- yardımcı fonksiyonlar (virgüllü giriş için) ---
+st.markdown("""
+<style>
+[data-testid="stAppViewContainer"] {
+    background: #f1f5f9;
+}
+
+.block-container {
+    padding-top: 1.5rem;
+    max-width: 1200px;
+}
+
+.header-box {
+    background: white;
+    border-radius: 18px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+}
+
+.header-box img {
+    width: 145px;
+    height: 105px;
+    object-fit: contain;
+}
+
+.main-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.sub-title {
+    font-size: 16px;
+    color: #475569;
+    margin-top: 6px;
+}
+
+.metric-box {
+    background: white;
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    margin-bottom: 18px;
+    height: 78px;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+}
+
+.metric-label {
+    font-size: 14px;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.metric-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: #ef3340;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.section-box {
+    background: white;
+    border-radius: 18px;
+    padding: 18px;
+    margin-top: 18px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+}
+
+.section-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 16px;
+}
+
+div[data-testid="column"] {
+    padding: 8px !important;
+}
+
+div[data-testid="stButton"] {
+    width: 100% !important;
+}
+
+div[data-testid="stButton"] > button,
+.stButton > button {
+    width: 100% !important;
+    height: 80px !important;
+    min-height: 80px !important;
+    max-height: 80px !important;
+    border-radius: 14px !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 900 !important;
+    font-size: 18px !important;
+    background: linear-gradient(90deg, #ef3340, #457b9d) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    padding: 0 16px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+div[data-testid="stButton"] > button p,
+.stButton > button p {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-weight: 900 !important;
+}
+
+div[data-testid="stButton"] > button:hover,
+.stButton > button:hover {
+    color: white !important;
+    border: none !important;
+    opacity: 0.95;
+    transform: translateY(-2px);
+}
+
+.alt-box {
+    background: #eef6ff;
+    border-left: 6px solid #ef3340;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.total-box {
+    background: #ecfdf3;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #0f172a;
+    text-align: center;
+}
+
+input {
+    border-radius: 12px !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+def image_to_base64(path):
+    if not os.path.exists(path):
+        return ""
+    with open(path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+
+def get_all_groups():
+    groups = []
+    for ana_grup in DATA:
+        groups.extend(DATA[ana_grup].keys())
+    return sorted(set(groups))
+
+
+def get_all_alt_groups():
+    alt_groups = []
+    for ana_grup in DATA:
+        for grup in DATA[ana_grup]:
+            alt_groups.extend(DATA[ana_grup][grup])
+    return sorted(set(alt_groups))
+
+
+def filter_ana_gruplar(query):
+    if not query:
+        return list(DATA.keys())
+
+    q = query.lower()
+    result = []
+
+    for ana_grup, gruplar in DATA.items():
+        match = q in ana_grup.lower()
+
+        for grup, altlar in gruplar.items():
+            if q in grup.lower():
+                match = True
+
+            for alt in altlar:
+                if q in alt.lower():
+                    match = True
+
+        if match:
+            result.append(ana_grup)
+
+    return result
+
+
 def parse_number(value):
     try:
         return int(str(value).replace(",", "").replace(".", "").strip())
     except:
         return 0
 
+
 def formatted_text_input(label, default_value, key):
     return parse_number(
-        st.text_input(label, value=f"{default_value:,}", key=key)
+        st.text_input(
+            label,
+            value=f"{default_value:,}",
+            key=key
+        )
     )
+
+
+logo_b64 = image_to_base64(LOGO_PATH)
+
+if logo_b64:
+    logo_html = f'<img src="data:image/jpeg;base64,{logo_b64}">'
+else:
+    logo_html = '<div style="font-size:60px;">🏗️</div>'
+
+st.markdown(
+    f"""
+    <div class="header-box">
+        {logo_html}
+        <div>
+            <div class="main-title">Türkiye İnşaat Tedarik Sınıflandırma Sistemi</div>
+            <div class="sub-title">(MasterFormat Tabanlı)</div>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+if "secilen_ana_grup" not in st.session_state:
+    st.session_state.secilen_ana_grup = None
+
+if "secilen_grup" not in st.session_state:
+    st.session_state.secilen_grup = None
+
+ana_gruplar = list(DATA.keys())
+gruplar = get_all_groups()
+alt_gruplar = get_all_alt_groups()
+
+m1, m2, m3 = st.columns(3)
+
+with m1:
+    st.markdown(f"""
+    <div class="metric-box">
+        <div class="metric-label">Ana Grup Sayısı</div>
+        <div class="metric-value">{len(ana_gruplar):,}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with m2:
+    st.markdown(f"""
+    <div class="metric-box">
+        <div class="metric-label">Grup Sayısı</div>
+        <div class="metric-value">{len(gruplar):,}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with m3:
+    st.markdown(f"""
+    <div class="metric-box">
+        <div class="metric-label">Alt Grup Sayısı</div>
+        <div class="metric-value">{len(alt_gruplar):,}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+arama = st.text_input("Ara", placeholder="Beton, Demir, Kablo, Cephe...")
+
+gosterilecek_ana_gruplar = filter_ana_gruplar(arama)
+
+st.markdown('<div class="section-box">', unsafe_allow_html=True)
+st.markdown('<div class="section-title">20 Ana Grup</div>', unsafe_allow_html=True)
+
+for i in range(0, len(gosterilecek_ana_gruplar), 4):
+    cols = st.columns(4)
+    for j, ana_grup in enumerate(gosterilecek_ana_gruplar[i:i + 4]):
+        with cols[j]:
+            if st.button(ana_grup, key=f"ana_{ana_grup}", use_container_width=True):
+                st.session_state.secilen_ana_grup = ana_grup
+                st.session_state.secilen_grup = None
+
+st.markdown('</div>', unsafe_allow_html=True)
+
+if st.session_state.secilen_ana_grup:
+    secilen_gruplar = list(DATA[st.session_state.secilen_ana_grup].keys())
+
+    st.markdown('<div class="section-box">', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="section-title">{st.session_state.secilen_ana_grup} İçindeki Gruplar</div>',
+        unsafe_allow_html=True
+    )
+
+    for i in range(0, len(secilen_gruplar), 5):
+        cols = st.columns(5)
+        for j, grup in enumerate(secilen_gruplar[i:i + 5]):
+            with cols[j]:
+                if st.button(
+                    grup,
+                    key=f"grup_{st.session_state.secilen_ana_grup}_{grup}",
+                    use_container_width=True
+                ):
+                    st.session_state.secilen_grup = grup
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+if st.session_state.secilen_ana_grup and st.session_state.secilen_grup:
+    secilen_alt_gruplar = DATA[st.session_state.secilen_ana_grup][st.session_state.secilen_grup]
+
+    st.markdown('<div class="section-box">', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="section-title">{st.session_state.secilen_grup} İçindeki Alt Gruplar</div>',
+        unsafe_allow_html=True
+    )
+
+    for alt_grup in secilen_alt_gruplar:
+        st.markdown(f'<div class="alt-box">{alt_grup}</div>', unsafe_allow_html=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
 
 # =========================================================
 # GELİR HESAPLAMA PANELİ
@@ -175,7 +501,7 @@ c1, c2 = st.columns(2)
 
 with c1:
     insaat_firma_sayisi = formatted_text_input(
-        "1. İnşaat Firması Sayısı (Yıllık Abone İnşaat Firması Sayısı)",
+        "1. Yıllık Abone İnşaat Firması Sayısı",
         1000,
         "insaat_firma_sayisi"
     )
@@ -191,7 +517,10 @@ yillik_kazanc_insaat = insaat_firma_sayisi * insaat_sistem_bedeli * 0.20
 
 st.markdown(f"""
 <div class="alt-box">
-    3. Yıllık Kazanç (İnşaat Firması): {yillik_kazanc_insaat:,.0f} TL
+    3. Yıllık Kazanç (İnşaat Firması):
+    <span style="color:#ef3340; font-size:20px; font-weight:900;">
+        {yillik_kazanc_insaat:,.0f} TL
+    </span>
 </div>
 """, unsafe_allow_html=True)
 
@@ -199,8 +528,8 @@ c3, c4 = st.columns(2)
 
 with c3:
     tedarikci_sayisi = formatted_text_input(
-        "4. Tedarikçi Sayısı (Yıllık Abone Tedarikçi Sayısı)",
-        5000,
+        "4. Yıllık Abone Tedarikçi Sayısı",
+        1000,
         "tedarikci_sayisi"
     )
 
@@ -216,11 +545,17 @@ toplam_kazanc = yillik_kazanc_insaat + yillik_kazanc_tedarikci
 
 st.markdown(f"""
 <div class="alt-box">
-    6. Yıllık Kazanç (Tedarikçi): {yillik_kazanc_tedarikci:,.0f} TL
+    6. Yıllık Kazanç (Tedarikçi):
+    <span style="color:#ef3340; font-size:20px; font-weight:900;">
+        {yillik_kazanc_tedarikci:,.0f} TL
+    </span>
 </div>
 
 <div class="total-box">
-    7. Toplam Kazanç: {toplam_kazanc:,.0f} TL
+    7. Toplam Kazanç:
+    <span style="color:#1d6fa5; font-size:30px; font-weight:900;">
+        {toplam_kazanc:,.0f} TL
+    </span>
 </div>
 """, unsafe_allow_html=True)
 
