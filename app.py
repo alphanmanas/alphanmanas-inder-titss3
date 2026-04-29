@@ -362,6 +362,23 @@ def filter_ana_gruplar(query):
     return result
 
 
+def parse_number(value):
+    try:
+        return int(str(value).replace(",", "").replace(".", "").strip())
+    except:
+        return 0
+
+
+def formatted_text_input(label, default_value, key):
+    return parse_number(
+        st.text_input(
+            label,
+            value=f"{default_value:,}",
+            key=key
+        )
+    )
+
+
 logo_b64 = image_to_base64(LOGO_PATH)
 
 if logo_b64:
@@ -398,7 +415,7 @@ with m1:
     st.markdown(f"""
     <div class="metric-box">
         <div class="metric-label">Ana Grup Sayısı</div>
-        <div class="metric-value">{len(ana_gruplar)}</div>
+        <div class="metric-value">{len(ana_gruplar):,}</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -406,7 +423,7 @@ with m2:
     st.markdown(f"""
     <div class="metric-box">
         <div class="metric-label">Grup Sayısı</div>
-        <div class="metric-value">{len(gruplar)}</div>
+        <div class="metric-value">{len(gruplar):,}</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -414,7 +431,7 @@ with m3:
     st.markdown(f"""
     <div class="metric-box">
         <div class="metric-label">Alt Grup Sayısı</div>
-        <div class="metric-value">{len(alt_gruplar)}</div>
+        <div class="metric-value">{len(alt_gruplar):,}</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -479,30 +496,20 @@ if st.session_state.secilen_ana_grup and st.session_state.secilen_grup:
 st.markdown('<div class="section-box">', unsafe_allow_html=True)
 st.markdown('<div class="section-title">Gelir Hesaplama Paneli</div>', unsafe_allow_html=True)
 
-c1, c2, c3 = st.columns(3)
+c1, c2 = st.columns(2)
 
 with c1:
-    insaat_firma_sayisi = st.number_input(
-        "1. İnşaat Firması Sayısı",
-        min_value=0,
-        value=100,
-        step=1
+    insaat_firma_sayisi = formatted_text_input(
+        "1. İnşaat Firması Sayısı (Yıllık Abone İnşaat Firması Sayısı)",
+        1000,
+        "insaat_firma_sayisi"
     )
 
 with c2:
-    insaat_sistem_bedeli = st.number_input(
+    insaat_sistem_bedeli = formatted_text_input(
         "2. İnşaat Firması Sistem Kullanım Bedeli",
-        min_value=0,
-        value=10000,
-        step=1000
-    )
-
-with c3:
-    yillik_abone_insaat = st.number_input(
-        "3. Yıllık Abone İnşaat Firması",
-        min_value=0,
-        value=20,
-        step=1
+        10000,
+        "insaat_sistem_bedeli"
     )
 
 yillik_kazanc_insaat = insaat_firma_sayisi * insaat_sistem_bedeli * 0.20
@@ -513,33 +520,23 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-c4, c5, c6 = st.columns(3)
+c3, c4 = st.columns(2)
+
+with c3:
+    tedarikci_sayisi = formatted_text_input(
+        "5. Tedarikçi Sayısı (Yıllık Abone Tedarikçi Sayısı)",
+        5000,
+        "tedarikci_sayisi"
+    )
 
 with c4:
-    tedarikci_sayisi = st.number_input(
-        "5. Tedarikçi Sayısı",
-        min_value=0,
-        value=1000,
-        step=1
-    )
-
-with c5:
-    tedarikci_sistem_bedeli = st.number_input(
+    tedarikci_sistem_bedeli = formatted_text_input(
         "6. Tedarikçi Sistem Kullanım Bedeli",
-        min_value=0,
-        value=5000,
-        step=1000
+        5000,
+        "tedarikci_sistem_bedeli"
     )
 
-with c6:
-    yillik_abone_tedarikci = st.number_input(
-        "7. Yıllık Abone Tedarikçi",
-        min_value=0,
-        value=200,
-        step=1
-    )
-
-yillik_kazanc_tedarikci = tedarikci_sistem_bedeli * yillik_abone_tedarikci * 0.20
+yillik_kazanc_tedarikci = tedarikci_sayisi * tedarikci_sistem_bedeli
 toplam_kazanc = yillik_kazanc_insaat + yillik_kazanc_tedarikci
 
 st.markdown(f"""
