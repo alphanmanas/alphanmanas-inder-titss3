@@ -237,7 +237,6 @@ st.markdown("""
     margin-bottom: 16px;
 }
 
-/* KUTULAR: EŞİT GENİŞLİK + EŞİT YÜKSEKLİK */
 div[data-testid="column"] {
     padding: 8px !important;
 }
@@ -252,25 +251,19 @@ div[data-testid="stButton"] > button,
     height: 80px !important;
     min-height: 80px !important;
     max-height: 80px !important;
-
     border-radius: 14px !important;
     border: none !important;
-
     color: white !important;
     font-weight: 900 !important;
     font-size: 18px !important;
-
     background: linear-gradient(90deg, #ef3340, #457b9d) !important;
-
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     box-sizing: border-box !important;
-
     text-align: center !important;
     padding: 0 16px !important;
     line-height: 1 !important;
-
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
@@ -303,6 +296,17 @@ div[data-testid="stButton"] > button:hover,
     font-size: 16px;
     font-weight: 700;
     margin-bottom: 10px;
+}
+
+.total-box {
+    background: #f8fafc;
+    border-left: 6px solid #457b9d;
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #0f172a;
 }
 
 input {
@@ -466,3 +470,86 @@ if st.session_state.secilen_ana_grup and st.session_state.secilen_grup:
         st.markdown(f'<div class="alt-box">{alt_grup}</div>', unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
+
+
+# =========================================================
+# GELİR HESAPLAMA PANELİ
+# =========================================================
+
+st.markdown('<div class="section-box">', unsafe_allow_html=True)
+st.markdown('<div class="section-title">Gelir Hesaplama Paneli</div>', unsafe_allow_html=True)
+
+c1, c2, c3 = st.columns(3)
+
+with c1:
+    insaat_firma_sayisi = st.number_input(
+        "1. İnşaat Firması Sayısı",
+        min_value=0,
+        value=100,
+        step=1
+    )
+
+with c2:
+    insaat_sistem_bedeli = st.number_input(
+        "2. İnşaat Firması Sistem Kullanım Bedeli",
+        min_value=0,
+        value=10000,
+        step=1000
+    )
+
+with c3:
+    yillik_abone_insaat = st.number_input(
+        "3. Yıllık Abone İnşaat Firması",
+        min_value=0,
+        value=20,
+        step=1
+    )
+
+yillik_kazanc_insaat = insaat_firma_sayisi * insaat_sistem_bedeli * 0.20
+
+st.markdown(f"""
+<div class="alt-box">
+    4. Yıllık Kazanç (İnşaat Firması): {yillik_kazanc_insaat:,.0f} TL
+</div>
+""", unsafe_allow_html=True)
+
+c4, c5, c6 = st.columns(3)
+
+with c4:
+    tedarikci_sayisi = st.number_input(
+        "5. Tedarikçi Sayısı",
+        min_value=0,
+        value=1000,
+        step=1
+    )
+
+with c5:
+    tedarikci_sistem_bedeli = st.number_input(
+        "6. Tedarikçi Sistem Kullanım Bedeli",
+        min_value=0,
+        value=5000,
+        step=1000
+    )
+
+with c6:
+    yillik_abone_tedarikci = st.number_input(
+        "7. Yıllık Abone Tedarikçi",
+        min_value=0,
+        value=200,
+        step=1
+    )
+
+yillik_kazanc_tedarikci = tedarikci_sistem_bedeli * yillik_abone_tedarikci * 0.20
+toplam_kazanc = yillik_kazanc_insaat + yillik_kazanc_tedarikci
+
+st.markdown(f"""
+<div class="alt-box">
+    8. Yıllık Kazanç (Tedarikçi): {yillik_kazanc_tedarikci:,.0f} TL
+</div>
+
+<div class="total-box">
+    9. Toplam Kazanç: {toplam_kazanc:,.0f} TL
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
