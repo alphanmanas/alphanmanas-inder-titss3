@@ -370,14 +370,26 @@ def parse_number(value):
         return 0
 
 
+def format_number_input(widget_key):
+    raw_value = st.session_state.get(widget_key, "")
+    number = parse_number(raw_value)
+    st.session_state[widget_key] = f"{number:,}"
+
+
 def formatted_text_input(label, default_value, key):
-    return parse_number(
-        st.text_input(
-            label,
-            value=f"{default_value:,}",
-            key=key
-        )
+    widget_key = f"{key}_input"
+
+    if widget_key not in st.session_state:
+        st.session_state[widget_key] = f"{default_value:,}"
+
+    st.text_input(
+        label,
+        key=widget_key,
+        on_change=format_number_input,
+        args=(widget_key,)
     )
+
+    return parse_number(st.session_state[widget_key])
 
 
 logo_b64 = image_to_base64(LOGO_PATH)
